@@ -1,0 +1,26 @@
+//etats initials à actifs
+
+machine=[PASSIF,ACTIF] {
+	  etat=2;
+	  init=1;
+	  0=PASSIF;
+	  1=ACTIF;
+	  0->1 [A];
+	  1->0 [P];
+};;
+
+token=[] {
+	etat=4;
+	init=3;
+	0=TOUSPASSIF;
+	1=1ACTIF;
+	2=2ACTIF;
+	3=3ACTIF;
+	3->2 [D];
+	2->1 [D];
+	1->0 [D];
+}
+
+systeme=<machine m1, machine m2,machine m3, token tk>{
+
+	};;
