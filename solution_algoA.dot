@@ -1,0 +1,11 @@
+digraph system {
+_31[label="", shape=none ];
+_31->31;
+31 [label= "31 [m1.ACTIF, m2.ACTIF, m3.ACTIF, tk.CACTIF]"];
+19 [label= "19 [m1.ACTIF, m2.ACTIF, m3.PASSIF, tk.BACTIF]"];
+9 [label= "9 [m1.ACTIF, m2.PASSIF, m3.PASSIF, tk.AACTIF]"];
+0 [label= "0 [m1.PASSIF, m2.PASSIF, m3.PASSIF, tk.TOUSPASSIF]"];
+31->19 [label= ""];
+19->9 [label= ""];
+9->0 [label= ""];
+}

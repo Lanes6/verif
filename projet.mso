@@ -1,6 +1,6 @@
 //etats initials à actifs
 
-machine=[PASSIF,ACTIF] {
+machine=[PASSIF,ACTIF]{
 	  etat=2;
 	  init=1;
 	  0=PASSIF;
@@ -9,18 +9,30 @@ machine=[PASSIF,ACTIF] {
 	  1->0 [P];
 };;
 
-token=[] {
+token=[TOUSPASSIF,AACTIF,BACTIF,CACTIF]{
 	etat=4;
 	init=3;
 	0=TOUSPASSIF;
-	1=1ACTIF;
-	2=2ACTIF;
-	3=3ACTIF;
-	3->2 [D];
-	2->1 [D];
-	1->0 [D];
-}
+	1=AACTIF;
+	2=BACTIF;
+	3=CACTIF;
+	3->2 [Da];
+	2->1 [Db];
+	1->0 [Dc];
+};;
 
-systeme=<machine m1, machine m2,machine m3, token tk>{
-
+systeme_algoA=<machine m1, machine m2, machine m3, token tk>{
+	<_,_,P,Da>;
+	<_,P,_,Db>;
+	<P,_,_,Dc>;
 	};;
+
+systeme_algoB=<machine m1, machine m2, machine m3, token tk>{
+	<_,_,P,Da>;
+	<_,P,_,Db>;
+	<P,_,_,Dc>;
+	};;
+
+			
+solution = systeme_algoA-> (m1.PASSIF && m2.PASSIF && m3.PASSIF) && tk.TOUSPASSIF;;
+todot solution_algoA.dot solution;;
