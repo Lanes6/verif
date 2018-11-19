@@ -7,32 +7,44 @@ machine=[PASSIF,ACTIF]{
 	  1=ACTIF;
 	  0->1 [A];
 	  1->0 [P];
+	  0->0 [PR];
 };;
 
-token=[TOUSPASSIF,AACTIF,BACTIF,CACTIF]{
-	etat=4;
-	init=3;
-	0=TOUSPASSIF;
-	1=AACTIF;
-	2=BACTIF;
-	3=CACTIF;
-	3->2 [Da];
+token=[A,B,C]{
+	etat=3;
+	init=0;
+	0=A;
+	1=B;
+	2=C;
 	2->1 [Db];
-	1->0 [Dc];
+	1->0 [Da];
+	0->2 [Dc];
 };;
 
-systeme_algoA=<machine m1, machine m2, machine m3, token tk>{
-	<_,_,P,Da>;
-	<_,P,_,Db>;
+systeme_algoA=<machine m0, machine m1, machine m2, token tk>{
+	<_,_,P,Db>;
 	<P,_,_,Dc>;
+	<_,P,_,Da>;
 	};;
 
-systeme_algoB=<machine m1, machine m2, machine m3, token tk>{
-	<_,_,P,Da>;
-	<_,P,_,Db>;
+systeme_algoB=<machine m0, machine m1, machine m2, token tk>{
+	<_,_,P,Db>;
+	<_,_,PR,Db>;
+	<_,A,P,Db>;
+	<A,_,P,Db>;
+
 	<P,_,_,Dc>;
+	<PR,_,_,Dc>;
+	<P,A,_,Dc>;
+	<P,_,A,Dc>;
+
+	<_,P,_,Da>;
+	<_,PR,_,Da>;
+	<A,P,_,Da>;
+	<_,P,A,Da>;
 	};;
 
-			
-solution = systeme_algoA-> (m1.PASSIF && m2.PASSIF && m3.PASSIF) && tk.TOUSPASSIF;;
-todot solution_algoA.dot solution;;
+solution_algoA = systeme_algoA->(m0.PASSIF && m1.PASSIF && m2.PASSIF) && tk.A;;
+todot solution_algoA.dot solution_algoA;;
+solution_algoB = systeme_algoB->(m0.PASSIF && m1.PASSIF && m2.PASSIF) && tk.A;;
+todot systeme_algoB.dot systeme_algoB;;
