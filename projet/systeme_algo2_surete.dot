@@ -8,7 +8,7 @@ _23->23;
 30 [label= "30 [M0.PASSIF, M1.ACTIF, M2.ACTIF, Tk.Term]"];
 26 [label= "26 [M0.PASSIF, M1.ACTIF, M2.PASSIF, Tk.Term]"];
 28 [label= "28 [M0.PASSIF, M1.PASSIF, M2.ACTIF, Tk.Term]"];
-24 [label= "24 [M0.PASSIF, M1.PASSIF, M2.PASSIF, Tk.Term]"];
+24 [label= "24 [M0.PASSIF, M1.PASSIF, M2.PASSIF, Tk.Term, surete]"];
 23->11 [label= ""];
 11->1 [label= ""];
 11->5 [label= ""];

@@ -9,17 +9,19 @@ machine=[PASSIF,ACTIF]{
 	  0->0 [StayPassif];
 };;
 
-token=[M0,M1,M2,M0End]{
+token=[M0,M1,M2,Term]{
 	etat=4;
 	init=2;
 	0=M0;
 	1=M1;
 	2=M2;
-	3=M0End;
+	3=Term;
 	2->1 [GoM1];
 	1->0 [GoM0];
-	0->3 [EndM0];
+	0->3 [GoTerm];
+	3->2 [GoM2];
 };;
+
 
 systeme=<machine M0, machine M1, machine M2, token Tk>{
 	<_,_,GoPassif,GoM1>;
@@ -32,11 +34,13 @@ systeme=<machine M0, machine M1, machine M2, token Tk>{
 	<_,GoPassif,GoActif,GoM0>;
 	<_,StayPassif,_,GoM0>;
 
-	<GoPassif,_,_,EndM0>;
-	<GoPassif,GoActif,_,EndM0>;
-	<GoPassif,_,GoActif,EndM0>;
-	<StayPassif,_,_,EndM0>;
+	<GoPassif,_,_,GoTerm>;
+	<GoPassif,GoActif,_,GoTerm>;
+	<GoPassif,_,GoActif,GoTerm>;
+	<StayPassif,_,_,GoTerm>;
 	};;
-
 todot systeme_algo2.dot systeme;;
+
+systeme += surete <- AG(!(Tk.Term && (M0.ACTIF || M1.ACTIF || M2.ACTIF)));;
+todot systeme_algo2_surete.dot systeme;;
 
