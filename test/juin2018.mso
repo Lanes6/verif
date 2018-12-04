@@ -1,0 +1,74 @@
+Proc = [sc,dem,fin] {
+     etat = 4;
+     init = 0;
+     1=dem;
+     2=sc;
+     3=fin;
+     0->1 [a0];
+     1->2 [a1];
+     2->0 [a2];
+     0->3 [a3];
+};;
+
+Var =[] {
+    etat=2;
+    init=0;
+    0->0 [r0,e0];
+    1->0 [r0];
+    0->1 [r1];
+    1->1 [r1,e1];
+};;
+
+systeme = <Proc p0, Proc p1, Var turn, Var Q0> {
+	<a0,_,r1,r1> -> p0;
+	<a1,_,e0,_> -> p0;
+	<a2,_,_,r0> -> p0;
+	<a3,_,_,_> -> p0;
+	<_,a0,r0,_> -> p1;
+	<_,a1,e1,_> -> p1;
+	<_,a1,_,e0> -> p1;
+	<_,a2,_,_> -> p1;
+	<_,a3,_,_> -> p1; 
+};;
+
+todot test.dot systeme;;
+
+/* CTL surete */ 
+
+systeme += surete <- AG(!(p0.sc && p1.sc));;
+todot test.dot systeme;;
+
+
+/*
+systeme += equitep0 <- AG(p0.dem -> AF(p0.sc));;
+
+systeme += equitep1 <- AG(p1.dem -> AF(p1.sc));;
+
+
+auto = automaton systeme;;
+*/
+/*
+nonsure= {
+     etat=2;
+     acc=1;
+     init=0;
+     0- !(p0.sc && p1.sc) -> 0;
+     0- p0.sc && p1.sc ->1;
+     1- true ->1 [0];
+};;
+
+nonequitable= {
+     etat=2;
+     acc=1;
+     init=0;
+     0- true -> 0;
+     0- p1.dem && !p1.sc ->1;
+     1- !p1.sc ->1 [0];
+};;
+
+*/
+/*
+inter = nonsure && auto;;
+inter = reduce inter;;
+*/
+
