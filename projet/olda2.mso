@@ -4,10 +4,9 @@ machine=[PASSIF,ACTIF]{
 	  init=1;
 	  0=PASSIF;
 	  1=ACTIF;
-	  1->1 [StayActif,FinalActif];
-	  0->1 [GoActif,FinalActif];
-	  0->0 [StayPassif,FinalPassif];
-	  1->0 [GoPassif,FinalPassif];
+	  0->1 [GoActif];
+	  1->0 [GoPassif];
+	  0->0 [StayPassif];
 };;
 
 token=[M0,M1,M2,Term]{
@@ -17,12 +16,10 @@ token=[M0,M1,M2,Term]{
 	1=M1;
 	2=M2;
 	3=Term;
-	2->2 [Stay,StayM2];
-	1->1 [Stay,StayM1];
-	0->0 [Stay,StayM0];
 	2->1 [GoM1];
 	1->0 [GoM0];
 	0->3 [GoTerm];
+	3->2 [GoM2];
 };;
 
 
