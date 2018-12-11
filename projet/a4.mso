@@ -10,16 +10,16 @@ machine=[PASSIF,ACTIF]{
 	  0->0 [StayPassif];
 };;
 
-token=[M0,M1,M2,M0End]{
+token=[M0,M1,M2,Term]{
 	etat=4;
 	init=2;
 	0=M0;
-	1=M1;
+	1=M0;
 	2=M2;
-	3=M0End;
+	3=Term;
 	2->1 [GoM1];
 	1->0 [GoM0];
-	0->3 [EndM0];
+	0->3 [GoTerm];
 	3->2 [GoM2];
 };;
 
@@ -46,10 +46,10 @@ systeme=<machine M0, couleur ClrM0, machine M1, couleur ClrM1, machine M2, coule
 	<_,_,GoPassif,GoBlanc,GoActif,_,GoM0,GoNoir>;
 	<_,_,StayPassif,GoBlanc,_,_,GoM0,_>;
 
-	<GoPassif,_,_,_,_,_,EndM0,_>;
-	<GoPassif,GoNoir,GoActif,_,_,_,EndM0,_>;
-	<GoPassif,GoNoir,_,_,GoActif,_,EndM0,_>;
-	<StayPassif,_,_,_,_,_,EndM0,_>;
+	<GoPassif,_,_,_,_,_,GoTerm,_>;
+	<GoPassif,GoNoir,GoActif,_,_,_,GoTerm,_>;
+	<GoPassif,GoNoir,_,_,GoActif,_,GoTerm,_>;
+	<StayPassif,_,_,_,_,_,GoTerm,_>;
 
 	<_,NoirToBlanc,_,_,_,_,GoM2,StayBlanc>;
 	<_,StayBlanc,_,_,_,_,GoM2,NoirToBlanc>;
@@ -57,4 +57,6 @@ systeme=<machine M0, couleur ClrM0, machine M1, couleur ClrM1, machine M2, coule
 	};;
 
 todot systeme_algo4.dot systeme;;
+systeme += surete <-  AF(Tk.Term && M0.PASSIF && M1.PASSIF && M2.PASSIF);;
+todot systeme_algo4_surete.dot systeme;;
 

@@ -27,5 +27,5 @@ systeme=<machine M0, machine M1, machine M2, token Tk>{
 	};;
 todot systeme_algo1.dot systeme;;
 
-systeme += surete <- AG(!(Tk.Term && (M0.ACTIF || M1.ACTIF || M2.ACTIF)));;
+systeme += surete <- AF(Tk.Term && M0.PASSIF && M1.PASSIF && M2.PASSIF);;
 todot systeme_algo1_surete.dot systeme;;
