@@ -25,25 +25,30 @@ token=[M0,M1,M2,Term]{
 	0->3 [GoTerm];
 };;
 
-
 systeme=<machine M0, machine M1, machine M2, token Tk>{
-	<_,_,GoPassif,GoM1>;
-	<_,GoActif,GoPassif,GoM1>;
-	<GoActif,_,GoPassif,GoM1>;
-	<_,_,StayPassif,GoM1>;
+	//Une machine peut passer spontanément de active à passive (sauf quand le jeton est sur MTerm)
+		<_,_,GoPassif,Stay>; //M2 Actif->Passif
+		<_,GoPassif,_,Stay>; //M1 Actif->Passif
+		<GoPassif,_,_,Stay>; //M0 Actif->Passif
 
-	<_,GoPassif,_,GoM0>;
-	<GoActif,GoPassif,_,GoM0>;
-	<_,GoPassif,GoActif,GoM0>;
-	<_,StayPassif,_,GoM0>;
+	//Jeton passé de Mi+1 à Mi si Mi+1 est passive 
+		<_,_,StayPassif,GoM1>; //Le jeton est sur M2 ET M2 est passif -> Le jeton est donné à M1
+		<_,StayPassif,_,GoM0>; //Le jeton est sur M1 ET M1 est passif -> Le jeton est donné à M0
+		<StayPassif,_,_,GoTerm>; //Le jeton est sur M0 ET M0 est passif -> Le jeton est donné à MTerm
 
-	<GoPassif,_,_,GoTerm>;
-	<GoPassif,GoActif,_,GoTerm>;
-	<GoPassif,_,GoActif,GoTerm>;
-	<StayPassif,_,_,GoTerm>;
+	//M2 peut envoyer des messages si elle est active (sauf quand le jeton est sur MTerm)
+		<_,GoActif,StayActif,Stay>; //Msg de M2 to M1
+		<GoActif,_,StayActif,Stay>; //Msg de M2 to M0
+
+	//M1 peut envoyer des messages si elle est active (sauf quand le jeton est sur MTerm)
+		<_,StayActif,GoActif,Stay>; //Msg de M1 to M2
+		<GoActif,StayActif,_,Stay>; //Msg de M1 to M0
+
+	//M0 peut envoyer des messages si elle est active (sauf quand le jeton est sur MTerm)
+		<StayActif,GoActif,_,Stay>; //Msg de M0 to M1
+		<StayActif,_,GoActif,Stay>; //Msg de M0 to M2
 	};;
+
+//systeme += surete <- AF(Tk.Term && M0.PASSIF && M1.PASSIF && M2.PASSIF);;
+//todot systeme_algo1_surete.dot systeme;;
 todot systeme_algo2.dot systeme;;
-
-systeme += surete <-  AF(Tk.Term && M0.PASSIF && M1.PASSIF && M2.PASSIF);;
-todot systeme_algo2_surete.dot systeme;;
-

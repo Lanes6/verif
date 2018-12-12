@@ -26,25 +26,16 @@ token=[M0,M1,M2,Term]{
 };;
 
 systeme=<machine M0, machine M1, machine M2, token Tk>{
-	<_,_,StayActif,StayM2>;
-	<_,GoPassif,StayActif,StayM2>;
-	<GoPassif,_,StayActif,StayM2>;
-	<GoPassif,GoPassif,StayActif,StayM2>;
+	//Une machine peut passer spontanément de active à passive (sauf quand le jeton est sur MTerm)
+		<_,_,GoPassif,Stay>; //M2 Actif->Passif
+		<_,GoPassif,_,Stay>; //M1 Actif->Passif
+		<GoPassif,_,_,Stay>; //M0 Actif->Passif
 
-	<_,_,GoPassif,GoM1>;
-	<_,GoPassif,GoPassif,GoM1>;
-	<GoPassif,_,GoPassif,GoM1>;
-	<GoPassif,GoPassif,GoPassif,GoM1>;
+	//Jeton passé de Mi+1 à Mi si Mi+1 est passive 
+		<_,_,StayPassif,GoM1>; //Le jeton est sur M2 ET M2 est passif -> Le jeton est donné à M1
+		<_,StayPassif,_,GoM0>; //Le jeton est sur M1 ET M1 est passif -> Le jeton est donné à M0
+		<StayPassif,_,_,GoTerm>; //Le jeton est sur M0 ET M0 est passif -> Le jeton est donné à MTerm
 
-	<_,StayActif,_,StayM1>;
-	<GoPassif,StayActif,_,StayM1>;
-
-	<_,FinalPassif,_,GoM0>;
-	<GoPassif,FinalPassif,_,GoM0>;
-
-	<StayActif,_,_,StayM0>;
-
-	<FinalPassif,_,_,GoTerm>;
 	};;
 
 //systeme += surete <- AF(Tk.Term && M0.PASSIF && M1.PASSIF && M2.PASSIF);;

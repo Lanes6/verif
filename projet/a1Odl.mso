@@ -1,0 +1,58 @@
+//Algo 1
+machine=[PASSIF,ACTIF]{
+	  etat=2;
+	  init=1;
+	  0=PASSIF;
+	  1=ACTIF;
+	  1->1 [StayActif,FinalActif];
+	  0->1 [GoActif,FinalActif];
+	  0->0 [StayPassif,FinalPassif];
+	  1->0 [GoPassif,FinalPassif];
+};;
+
+token=[M0,M1,M2,Term]{
+	etat=4;
+	init=2;
+	0=M0;
+	1=M1;
+	2=M2;
+	3=Term;
+	2->2 [Stay,StayM2];
+	1->1 [Stay,StayM1];
+	0->0 [Stay,StayM0];
+	2->1 [GoM1];
+	1->0 [GoM0];
+	0->3 [GoTerm];
+};;
+
+systeme=<machine M0, machine M1, machine M2, token Tk>{
+	//Jeton reste sur M2 => M2 doit etre Actif
+	<_,_,StayActif,StayM2>;
+	<_,GoPassif,StayActif,StayM2>;
+	<GoPassif,_,StayActif,StayM2>;
+	<GoPassif,GoPassif,StayActif,StayM2>;
+
+	//Jeton passe de M2 à M1 => M2 doit passer/etre à Passif 
+	<_,_,FinalPassif,GoM1>;
+	<_,GoPassif,FinalPassif,GoM1>;
+	<GoPassif,_,FinalPassif,GoM1>;
+	<GoPassif,GoPassif,FinalPassif,GoM1>;
+
+	//Jeton reste sur M1 => M1 doit etre Actif
+	<_,StayActif,_,StayM1>;
+	<GoPassif,StayActif,_,StayM1>;
+
+	//Jeton passe sur M0 => M1 doit passer/etre à Passif 
+	<_,FinalPassif,_,GoM0>;
+	<GoPassif,FinalPassif,_,GoM0>;
+
+	//Jeton reste sur M0 => M0 doit etre Actif
+	<StayActif,_,_,StayM0>;
+
+	//Jeton passe sur MTerm => M0 doit passer/etre à Passif 
+	<FinalPassif,_,_,GoTerm>;
+	};;
+
+//systeme += surete <- AF(Tk.Term && M0.PASSIF && M1.PASSIF && M2.PASSIF);;
+//todot systeme_algo1_surete.dot systeme;;
+todot systeme_algo1.dot systeme;;

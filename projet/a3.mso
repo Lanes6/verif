@@ -4,10 +4,10 @@ machine=[PASSIF,ACTIF]{
 	  init=1;
 	  0=PASSIF;
 	  1=ACTIF;
-	  0->1 [GoActif];
-	  1->1 [GoActif];
-	  1->0 [GoPassif];
-	  0->0 [StayPassif];
+	  1->1 [StayActif,FinalActif];
+	  0->1 [GoActif,FinalActif];
+	  0->0 [StayPassif,FinalPassif];
+	  1->0 [GoPassif,FinalPassif];
 };;
 
 token=[M0,M1,M2,Term]{
@@ -17,6 +17,9 @@ token=[M0,M1,M2,Term]{
 	1=M1;
 	2=M2;
 	3=Term;
+	2->2 [Stay,StayM2];
+	1->1 [Stay,StayM1];
+	0->0 [Stay,StayM0];
 	2->1 [GoM1];
 	1->0 [GoM0];
 	0->3 [GoTerm];
@@ -28,36 +31,44 @@ couleur=[Blanc,Noir]{
 	init=0;
 	0=Blanc;
 	1=Noir;
-	0->0 [StayBlanc,GoBlanc];
-	1->0 [NoirToBlanc,GoBlanc];
-	1->1 [StayNoir,GoNoir];
-	0->1 [BlancToNoir,GoNoir];
+	0->0 [StayBlanc,FinalBlanc];
+	1->0 [GoBlanc,FinalBlanc];
+	1->1 [StayNoir,FinalNoir];
+	0->1 [GoNoir,FinalNoir];
 };;
 
 
 systeme=<machine M0, couleur ClrM0, machine M1, couleur ClrM1, machine M2, couleur ClrM2, token Tk, couleur ClrTk>{
-	<_,_,_,_,GoPassif,GoBlanc,GoM1,_>;
-	<GoActif,_,_,_,GoPassif,GoBlanc,GoM1,GoNoir>;
-	<_,_,GoActif,_,GoPassif,GoBlanc,GoM1,GoNoir>;
-	<_,_,_,_,StayPassif,GoBlanc,GoM1,_>;
+	//Une machine peut passer spontanément de active à passive (sauf quand le jeton est sur MTerm)
+		<_,_,_,_,GoPassif,_,Stay,_>; //M2 Actif->Passif
+		<_,_,GoPassif,_,_,_,Stay,_>; //M1 Actif->Passif
+		<GoPassif,_,_,_,_,_,Stay,_>; //M0 Actif->Passif
 
-	<_,_,GoPassif,GoBlanc,_,_,GoM0,_>;
-	<GoActif,_,GoPassif,GoBlanc,_,_,GoM0,GoNoir>;
-	<_,_,GoPassif,GoBlanc,GoActif,_,GoM0,GoNoir>;
-	<_,_,StayPassif,GoBlanc,_,_,GoM0,_>;
+	//Jeton passé de Mi+1 à Mi si Mi+1 est passive : on envoi un jeton de couleur en fonction de la couleur de la machine Mi+1
+		//Le jeton est sur M2 ET M2 est passif -> Le jeton est donné à M1
+			<_,_,_,_,StayPassif,GoBlanc,GoM1,FinalNoir>; //M2 est Noir -> Jeton devient/reste Noir ET M2 devient Blanc
+			<_,_,_,_,StayPassif,StayBlanc,GoM1,_>; //M2 est Blanc -> On ne touche pas à la couleur de Jeton
+		//Le jeton est sur M1 ET M1 est passif -> Le jeton est donné à M0
+			<_,_,StayPassif,GoBlanc,_,_,GoM0,FinalNoir>; //M1 est Noir -> Jeton devient/reste Noir ET M1 devient Blanc
+			<_,_,StayPassif,StayBlanc,_,_,GoM0,_>; //M1 est Blanc -> On ne touche pas à la couleur de Jeton
+		//Le jeton est sur M0 ET M0 est passif -> Le jeton est donné à MTerm
+			<StayPassif,_,_,_,_,_,GoTerm,_>; //Peut importe la couleur de M0 on ne touche pas au jeton
+	
+	//Les machines actives peuvent envoyer des msgs
+		//M2 peut envoyer des messages si elle est active (sauf quand le jeton est sur MTerm)
+			<_,_,GoActif,_,StayActif,FinalNoir,Stay,_>; //Msg de M2 to M1 -> M2 devient/reste Noir
+			<GoActif,_,_,_,StayActif,FinalNoir,Stay,_>; //Msg de M2 to M0 -> M2 devient/reste Noir
 
-	<GoPassif,_,_,_,_,_,GoTerm,_>;
-	<GoPassif,GoNoir,GoActif,_,_,_,GoTerm,_>;
-	<GoPassif,GoNoir,_,_,GoActif,_,GoTerm,_>;
-	<StayPassif,_,_,_,_,_,GoTerm,_>;
+			<GoActif,_,StayActif,FinalNoir,_,_,Stay,_>; //Msg de M1 to M0 -> M1 devient/reste Noir
+			<_,_,StayActif,FinalNoir,GoActif,_,Stay,_>; //Msg de M1 to M2 -> M1 devient/reste Noir
 
-	<_,NoirToBlanc,_,_,_,_,GoM2,StayBlanc>;
-	<_,StayBlanc,_,_,_,_,GoM2,NoirToBlanc>;
-	<_,NoirToBlanc,_,_,_,_,GoM2,NoirToBlanc>;
+			<StayActif,FinalNoir,_,_,GoActif,_,Stay,_>; //Msg de M0 to M1 -> M0 devient/reste Noir
+			<StayActif,FinalNoir,GoActif,_,_,_,Stay,_>; //Msg de M0 to M1 -> M0 devient/reste Noir
+	//Nouvelle vérification
+		<_,GoBlanc,_,_,_,_,GoM2,FinalBlanc>; //M0 est Noir et Jeton est Noir ou Blanc
+		<_,StayBlanc,_,_,_,_,GoM2,GoBlanc>; //M0 est Blanc et Jeton est Noir
 	};;
+
+//systeme += surete <- AF(Tk.Term && M0.PASSIF && M1.PASSIF && M2.PASSIF);;
+//todot systeme_algo1_surete.dot systeme;;
 todot systeme_algo3.dot systeme;;
-/*ICI*/
-systeme += surete <-  AF(Tk.Term && M0.PASSIF && M1.PASSIF && M2.PASSIF);;
-todot systeme_algo3_surete.dot systeme;;
-
-
