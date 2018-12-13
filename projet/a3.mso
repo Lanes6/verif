@@ -52,8 +52,8 @@ systeme=<machine M0, couleur ClrM0, machine M1, couleur ClrM1, machine M2, coule
 			<_,_,StayPassif,GoBlanc,_,_,GoM0,FinalNoir>; //M1 est Noir -> Jeton devient/reste Noir ET M1 devient Blanc
 			<_,_,StayPassif,StayBlanc,_,_,GoM0,_>; //M1 est Blanc -> On ne touche pas à la couleur de Jeton
 		//Le jeton est sur M0 ET M0 est passif -> Le jeton est donné à MTerm
-			<StayPassif,_,_,_,_,_,GoTerm,_>; //Peut importe la couleur de M0 on ne touche pas au jeton
-	
+			<StayPassif,GoBlanc,_,_,_,_,GoTerm,FinalNoir>; //M0 est Noir -> Jeton devient/reste Noir ET M0 devient Blanc
+			<StayPassif,StayBlanc,_,_,_,_,GoTerm,_>; //M0 est Blanc -> On ne touche pas à la couleur de Jeton
 	//Les machines actives peuvent envoyer des msgs
 		//M2 peut envoyer des messages si elle est active (sauf quand le jeton est sur MTerm)
 			<_,_,GoActif,_,StayActif,FinalNoir,Stay,_>; //Msg de M2 to M1 -> M2 devient/reste Noir
@@ -62,11 +62,10 @@ systeme=<machine M0, couleur ClrM0, machine M1, couleur ClrM1, machine M2, coule
 			<GoActif,_,StayActif,FinalNoir,_,_,Stay,_>; //Msg de M1 to M0 -> M1 devient/reste Noir
 			<_,_,StayActif,FinalNoir,GoActif,_,Stay,_>; //Msg de M1 to M2 -> M1 devient/reste Noir
 
-			<StayActif,FinalNoir,_,_,GoActif,_,Stay,_>; //Msg de M0 to M1 -> M0 devient/reste Noir
+			<StayActif,FinalNoir,_,_,GoActif,_,Stay,_>; //Msg de M0 to M2 -> M0 devient/reste Noir
 			<StayActif,FinalNoir,GoActif,_,_,_,Stay,_>; //Msg de M0 to M1 -> M0 devient/reste Noir
 	//Nouvelle vérification
-		<_,GoBlanc,_,_,_,_,GoM2,FinalBlanc>; //M0 est Noir et Jeton est Noir ou Blanc
-		<_,StayBlanc,_,_,_,_,GoM2,GoBlanc>; //M0 est Blanc et Jeton est Noir
+		<_,FinalBlanc,_,_,_,_,GoM2,GoBlanc>; //Jeton est Noir
 	};;
 
 //systeme += surete <- AF(Tk.Term && M0.PASSIF && M1.PASSIF && M2.PASSIF);;
