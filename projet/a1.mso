@@ -37,7 +37,13 @@ systeme=<machine M0, machine M1, machine M2, token Tk>{
 		<StayPassif,_,_,GoTerm>; //Le jeton est sur M0 ET M0 est passif -> Le jeton est donné à MTerm
 
 	};;
-
-//systeme += surete <- AF(Tk.Term && M0.PASSIF && M1.PASSIF && M2.PASSIF);;
-//todot systeme_algo1_surete.dot systeme;;
 todot systeme_algo1.dot systeme;;
+
+//systeme += surete <- AG(Tk.Term->M0.PASSIF && M1.PASSIF && M2.PASSIF);;
+//todot systeme_algo1_surete.dot systeme;;
+
+//systeme += equiteFaible <- AG(M0.PASSIF && M1.PASSIF && M2.PASSIF -> EF(Tk.Term));;
+//todot systeme_algo1_equiteFaible.dot systeme;;
+
+//systeme += equiteForte <- AG(M0.PASSIF && M1.PASSIF && M2.PASSIF -> AF(Tk.Term));;
+//todot systeme_algo1_equiteForte.dot systeme;;
