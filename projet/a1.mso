@@ -35,15 +35,69 @@ systeme=<machine M0, machine M1, machine M2, token Tk>{
 		<_,_,StayPassif,GoM1>; //Le jeton est sur M2 ET M2 est passif -> Le jeton est donné à M1
 		<_,StayPassif,_,GoM0>; //Le jeton est sur M1 ET M1 est passif -> Le jeton est donné à M0
 		<StayPassif,_,_,GoTerm>; //Le jeton est sur M0 ET M0 est passif -> Le jeton est donné à MTerm
-
 	};;
+
 todot systeme_algo1.dot systeme;;
 
-//systeme += surete <- AG(Tk.Term->M0.PASSIF && M1.PASSIF && M2.PASSIF);;
-//todot systeme_algo1_surete.dot systeme;;
+/*CTL SURETE*/
+/*systeme += surete <- AG(Tk.Term->M0.PASSIF && M1.PASSIF && M2.PASSIF);;
+todot systeme_algo1_surete.dot systeme;;
+systeme=systeme|!surete;;
+todot systeme_algo1_NONsurete.dot systeme;;*/
 
-//systeme += equiteFaible <- AG(M0.PASSIF && M1.PASSIF && M2.PASSIF -> EF(Tk.Term));;
-//todot systeme_algo1_equiteFaible.dot systeme;;
+/*CTL EQUITE FORTE*/
+/*systeme += equiteForte <- AG(M0.PASSIF && M1.PASSIF && M2.PASSIF -> AF(Tk.Term));;
+todot systeme_algo1_equiteForte.dot systeme;;
+systeme=systeme|!equiteForte;;
+todot systeme_algo1_NONequiteForte.dot systeme;;*/
 
-//systeme += equiteForte <- AG(M0.PASSIF && M1.PASSIF && M2.PASSIF -> AF(Tk.Term));;
-//todot systeme_algo1_equiteForte.dot systeme;;
+/*CTL EQUITE FAIBLE*/
+/*systeme += equiteFaible <- AG(M0.PASSIF && M1.PASSIF && M2.PASSIF -> EF(Tk.Term));;
+todot systeme_algo1_equiteFaible.dot systeme;;
+systeme=systeme|!equiteFaible;;
+todot systeme_algo1_NONequiteFaible.dot systeme;;*/
+
+/*LTL SURETE*/
+//Automate obtenu grace à epita avec !G(Tk.Term->M0.PASSIF&&M1.PASSIF&&M2.PASSIF)
+/*LTLSurete= {
+     etat=2;
+     acc=1;
+     init=1;
+     0- true -> 0 [0];
+     1- ((!M1.PASSIF && Tk.Term) || (!M2.PASSIF && Tk.Term) || (!M0.PASSIF && Tk.Term)) ->0;
+     1- ((M1.PASSIF && M2.PASSIF && M0.PASSIF) || !Tk.Term) ->1;
+};;
+auto = automaton systeme;;
+inter = LTLSurete && auto;;
+inter = reduce inter;;
+todot systeme_algo1_LTLSurete.dot inter;;
+*/
+
+/*LTL EQUITE*/
+//Automate obtenu grace à epita avec !G((M0.PASSIF&&M1.PASSIF&&M2.PASSIF)->F(Tk.Term))
+/*LTLEquite= {
+     etat=2;
+     acc=1;
+     init=0;
+     0- true -> 0;
+     0- (!Tk.Term && M1.PASSIF && M2.PASSIF && M0.PASSIF) ->1;
+     1- (!Tk.Term) ->1 [0];
+};;
+
+auto = automaton systeme;;
+inter = LTLEquite && auto;;
+inter = reduce inter;;
+todot systeme_algo1_LTLEquite.dot inter;;
+*/
+
+
+
+
+
+
+
+
+
+
+
+

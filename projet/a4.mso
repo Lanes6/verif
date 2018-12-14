@@ -69,6 +69,22 @@ systeme=<machine M0, couleur ClrM0, machine M1, couleur ClrM1, machine M2, coule
 		<_,FinalBlanc,_,_,_,_,GoM2,GoBlanc>; //Jeton est Noir
 	};;
 
-//systeme += surete <- AF(Tk.Term && M0.PASSIF && M1.PASSIF && M2.PASSIF);;
-//todot systeme_algo1_surete.dot systeme;;
 todot systeme_algo4.dot systeme;;
+
+/*CTL SURETE*/
+/*systeme += surete <- AG(Tk.Term->M0.PASSIF && M1.PASSIF && M2.PASSIF && ClrTk.Blanc);;
+todot systeme_algo4_surete.dot systeme;;
+systeme=systeme|!surete;;
+todot systeme_algo4_NONsurete.dot systeme;;*/
+
+/*CTL EQUITE FORTE*/
+/*systeme += equiteForte <- AG(M0.PASSIF && M1.PASSIF && M2.PASSIF -> AF(Tk.Term && ClrTk.Blanc));;
+todot systeme_algo4_equiteForte.dot systeme;;
+systeme=systeme|!equiteForte;;
+todot systeme_algo4_NONequiteForte.dot systeme;;*/
+
+/*CTL EQUITE FAIBLE*/
+/*systeme += equiteFaible <- AG(M0.PASSIF && M1.PASSIF && M2.PASSIF -> EF(Tk.Term && ClrTk.Blanc));;
+todot systeme_algo4_equiteFaible.dot systeme;;
+systeme=systeme|!equiteFaible;;
+todot systeme_algo4_NONequiteFaible.dot systeme;;*/
