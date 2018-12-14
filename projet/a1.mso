@@ -40,22 +40,22 @@ systeme=<machine M0, machine M1, machine M2, token Tk>{
 todot systeme_algo1.dot systeme;;
 
 /*CTL SURETE*/
-/*systeme += surete <- AG(Tk.Term->M0.PASSIF && M1.PASSIF && M2.PASSIF);;
-todot systeme_algo1_surete.dot systeme;;
+/*systeme += surete <- AG(Tk.Term -> M0.PASSIF && M1.PASSIF && M2.PASSIF);;
+todot systeme_algo1_CTL_surete.dot systeme;;
 systeme=systeme|!surete;;
-todot systeme_algo1_NONsurete.dot systeme;;*/
+todot systeme_algo1_CTL_nonSurete.dot systeme;;*/
 
 /*CTL EQUITE FORTE*/
 /*systeme += equiteForte <- AG(M0.PASSIF && M1.PASSIF && M2.PASSIF -> AF(Tk.Term));;
-todot systeme_algo1_equiteForte.dot systeme;;
+todot systeme_algo1_CTL_equiteForte.dot systeme;;
 systeme=systeme|!equiteForte;;
-todot systeme_algo1_NONequiteForte.dot systeme;;*/
+todot systeme_algo1_CTL_nonEquiteForte.dot systeme;;*/
 
 /*CTL EQUITE FAIBLE*/
 /*systeme += equiteFaible <- AG(M0.PASSIF && M1.PASSIF && M2.PASSIF -> EF(Tk.Term));;
-todot systeme_algo1_equiteFaible.dot systeme;;
+todot systeme_algo1_CTL_equiteFaible.dot systeme;;
 systeme=systeme|!equiteFaible;;
-todot systeme_algo1_NONequiteFaible.dot systeme;;*/
+todot systeme_algo1_CTL_nonEquiteFaible.dot systeme;;*/
 
 /*LTL SURETE*/
 //Automate obtenu grace à epita avec !G(Tk.Term->M0.PASSIF&&M1.PASSIF&&M2.PASSIF)
@@ -70,7 +70,7 @@ todot systeme_algo1_NONequiteFaible.dot systeme;;*/
 auto = automaton systeme;;
 inter = LTLSurete && auto;;
 inter = reduce inter;;
-todot systeme_algo1_LTLSurete.dot inter;;
+todot systeme_algo1_LTL_surete.dot inter;;
 */
 
 /*LTL EQUITE*/
@@ -87,7 +87,7 @@ todot systeme_algo1_LTLSurete.dot inter;;
 auto = automaton systeme;;
 inter = LTLEquite && auto;;
 inter = reduce inter;;
-todot systeme_algo1_LTLEquite.dot inter;;
+todot systeme_algo1_LTL_equite.dot inter;;
 */
 
 

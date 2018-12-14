@@ -71,19 +71,53 @@ systeme=<machine M0, couleur ClrM0, machine M1, couleur ClrM1, machine M2, coule
 todot systeme_algo3.dot systeme;;
 
 /*CTL SURETE*/
-/*systeme += surete <- AG(Tk.Term->M0.PASSIF && M1.PASSIF && M2.PASSIF && ClrTk.Blanc);;
-todot systeme_algo3_surete.dot systeme;;
+/*systeme += surete <- AG(Tk.Term && ClrTk.Blanc -> M0.PASSIF && M1.PASSIF && M2.PASSIF);;
+todot systeme_algo3_CTL_surete.dot systeme;;
 systeme=systeme|!surete;;
-todot systeme_algo3_NONsurete.dot systeme;;*/
+todot systeme_algo3_CTL_nonSurete.dot systeme;;*/
 
 /*CTL EQUITE FORTE*/
 /*systeme += equiteForte <- AG(M0.PASSIF && M1.PASSIF && M2.PASSIF -> AF(Tk.Term && ClrTk.Blanc));;
-todot systeme_algo3_equiteForte.dot systeme;;
+todot systeme_algo3_CTL_equiteForte.dot systeme;;
 systeme=systeme|!equiteForte;;
-todot systeme_algo3_NONequiteForte.dot systeme;;*/
+todot systeme_algo3_CTL_nonEquiteForte.dot systeme;;*/
 
 /*CTL EQUITE FAIBLE*/
 /*systeme += equiteFaible <- AG(M0.PASSIF && M1.PASSIF && M2.PASSIF -> EF(Tk.Term && ClrTk.Blanc));;
-todot systeme_algo3_equiteFaible.dot systeme;;
+todot systeme_algo3_CTL_equiteFaible.dot systeme;;
 systeme=systeme|!equiteFaible;;
-todot systeme_algo3_NONequiteFaible.dot systeme;;*/
+todot systeme_algo3_CTL_nonEquiteFaible.dot systeme;;*/
+
+/*LTL SURETE*/
+//Automate obtenu grace à epita avec !G(Tk.Term && ClrTk.Blanc -> M0.PASSIF && M1.PASSIF && M2.PASSIF)
+/*LTLSurete= {
+     etat=2;
+     acc=1;
+     init=1;
+     0- true -> 0 [0];
+     1- ((!M1.PASSIF && Tk.Term && ClrTk.Blanc) || (!M2.PASSIF && Tk.Term && ClrTk.Blanc) || (!M0.PASSIF && Tk.Term && ClrTk.Blanc)) ->0;
+     1- ((M1.PASSIF && M2.PASSIF && M0.PASSIF) || !Tk.Term || !ClrTk.Blanc) ->1;
+};;
+auto = automaton systeme;;
+inter = LTLSurete && auto;;
+inter = reduce inter;;
+todot systeme_algo3_LTL_surete.dot inter;;
+*/
+
+
+/*LTL EQUITE*/
+//Automate obtenu grace à epita avec !G(M0.PASSIF && M1.PASSIF && M2.PASSIF -> F(Tk.Term && ClrTk.Blanc))
+/*LTLEquite= {
+     etat=2;
+     acc=1;
+     init=0;
+     0- true -> 0;
+     0- ((!ClrTk.Blanc && M1.PASSIF && M2.PASSIF && M0.PASSIF) || (!Tk.Term && M1.PASSIF && M2.PASSIF && M0.PASSIF)) ->1;
+     1- (!Tk.Term || !ClrTk.Blanc) ->1 [0];
+};;
+
+auto = automaton systeme;;
+inter = LTLEquite && auto;;
+inter = reduce inter;;
+todot systeme_algo3_LTL_equite.dot inter;;
+*/
